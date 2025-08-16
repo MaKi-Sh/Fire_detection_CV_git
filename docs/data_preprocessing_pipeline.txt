@@ -1,0 +1,18 @@
+1. Collect data
+    1. Hard negatives, other scenes, normal house
+    2. Include controlled fires, and uncontrolled fires
+    3. First collect video clips, and then scatter still frames 
+2. Annotation
+    1. label parts or “annotate” relevant parts of a frame 
+3. Data cleaning 
+    1. Reduce reframes
+    2. Reduce redundancy 
+    3. Remove low quality data 
+4. Data Synchronization 
+    1. align infrared data with visual camera data 
+5. Data Augmentation 
+    1. adjust for different camera angles, glare, etc
+6. Image resizing 
+7. Train-Validation-Test Split
+8. Dataset Packaging
+9. Preprocessing Verification
