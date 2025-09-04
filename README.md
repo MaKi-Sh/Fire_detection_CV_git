@@ -1,22 +1,19 @@
 ---
-
 language:
-
-* en
-  license: various
-  tags:
-* fire-detection
-* computer-vision
-* safety
-* science-fair
-  task\_categories:
-* image-classification
-* object-detection
-* video-classification
-  pretty\_name: Optical Fire Detection Dataset
-  size\_categories:
-* 10K\<n<100K
-
+- en
+license: "other"   # or "cc-by-4.0" if you're only including BoWFire
+tags:
+- fire-detection
+- computer-vision
+- safety
+- science-fair
+task_categories:
+- image-classification
+- object-detection
+- video-classification
+pretty_name: "Optical Fire Detection Dataset"
+size_categories:
+- 10K<n<100K
 ---
 
 # 2025 Science Fair – Optical Fire Detection System
@@ -30,7 +27,6 @@ This project explores an **optical fire detection system** using machine learnin
 * **Photoelectric smoke alarms**: react slowly to fires.
 * **Ionization detectors**: prone to false positives.
 * **Aspirating Smoke Detection (ASD)**: can generate false positives, and in outdoor environments smoke sampling is difficult.
-
 ---
 
 ## Packages and Tools
@@ -173,4 +169,3 @@ Two approaches:
 5. DeepStream (optional alternative)
 6. Apply thresholds & temporal logic directly on device
 7. Measure performance
-
