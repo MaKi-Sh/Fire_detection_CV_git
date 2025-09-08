@@ -1,4 +1,4 @@
-#Running CVAT Locally and Sharing Globally with ngrok
+# 🚀 Running CVAT Locally and Sharing Globally with ngrok
 
 This guide explains how to start CVAT using Docker and share it over the internet using ngrok.
 
@@ -60,5 +60,5 @@ docker compose down
 
 ---
 
-✅ CVAT now runs locally with Docker, and ngrok makes it accessible worldwide over HTTPS without any router configuration.
+CVAT now runs locally with Docker, and ngrok makes it accessible worldwide over HTTPS without any router configuration.
 
