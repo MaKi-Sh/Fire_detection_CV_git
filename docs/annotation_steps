@@ -1,24 +1,64 @@
-# ---- STEP 1. Clone CVAT repo ----
+#Running CVAT Locally and Sharing Globally with ngrok
+
+This guide explains how to start CVAT using Docker and share it over the internet using ngrok.
+
+---
+
+## Step 1. Clone the CVAT repository
+
+```bash
 git clone https://github.com/cvat-ai/cvat
 cd cvat
+```
 
-# ---- STEP 2. Start CVAT with Docker ----
+---
+
+## Step 2. Start CVAT with Docker
+
+```bash
 docker compose up -d
+```
 
-# Check that containers are running
+Check that containers are running:
+
+```bash
 docker ps | grep cvat
+```
 
-# Test in browser: http://localhost:8080
+Now open [http://localhost:8080](http://localhost:8080) in your browser to confirm CVAT is working.
 
-# ---- STEP 3. Start ngrok tunnel (global access) ----
-# This will forward https://xxxx.ngrok-free.app to your local CVAT
+---
+
+## Step 3. Expose CVAT globally with ngrok
+
+Run:
+
+```bash
 ngrok http --host-header=rewrite 8080
+```
 
-# Copy the HTTPS link ngrok shows (e.g. https://abcd-1234.ngrok-free.app)
-# Share that link to let anyone in the world access your CVAT
+ngrok will print a forwarding address, for example:
 
-# ---- STEP 4. Stop services ----
-# Stop ngrok by pressing Ctrl+C in the ngrok terminal
-# Then stop CVAT containers:
+```
+Forwarding   https://abcd-1234.ngrok-free.app -> http://localhost:8080
+```
+
+That `https://…ngrok-free.app` link is your global CVAT address.
+Share it with collaborators anywhere in the world.
+
+---
+
+## Step 4. Stop CVAT
+
+To stop ngrok, press **Ctrl + C** in the terminal where it’s running.
+
+To stop CVAT containers:
+
+```bash
 docker compose down
+```
+
+---
+
+✅ CVAT now runs locally with Docker, and ngrok makes it accessible worldwide over HTTPS without any router configuration.
 
