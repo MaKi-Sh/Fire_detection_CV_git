@@ -1,64 +1,34 @@
-# 🚀 Running CVAT Locally and Sharing Globally with ngrok
+# 🚀 Running Label Studio Locally and Sharing Globally with ngrok
 
-This guide explains how to start CVAT using Docker and share it over the internet using ngrok.
-
----
-
-## Step 1. Clone the CVAT repository
-
-```bash
-git clone https://github.com/cvat-ai/cvat
-cd cvat
-```
+This guide explains how to start Label Studio using Docker and share it over the internet using ngrok.
 
 ---
 
-## Step 2. Start CVAT with Docker
+## Step 1. Pip install the Label Studio
 
 ```bash
-docker compose up -d
+pip install label-studio
 ```
-
-Check that containers are running:
-
-```bash
-docker ps | grep cvat
-```
-
-Now open [http://localhost:8080](http://localhost:8080) in your browser to confirm CVAT is working.
 
 ---
-
-## Step 3. Expose CVAT globally with ngrok
-
-Run:
-
+## Step 2. Start ngrok tunnel
 ```bash
 ngrok http --host-header=rewrite 8080
 ```
+---
+## Step 3. Copy ngrok temporary link
 
-ngrok will print a forwarding address, for example:
-
-```
-Forwarding   https://abcd-1234.ngrok-free.app -> http://localhost:8080
-```
-
-That `https://…ngrok-free.app` link is your global CVAT address.
-Share it with collaborators anywhere in the world.
-
+Such as [https://8ed434c2a4a1.ngrok-free.app](https://8ed434c2a4a1.ngrok-free.app)
 ---
 
-## Step 4. Stop CVAT
-
-To stop ngrok, press **Ctrl + C** in the terminal where it’s running.
-
-To stop CVAT containers:
+## Step 4. Start Label Studio with label-studio start
 
 ```bash
-docker compose down
+LABEL_STUDIO_CSRF_TRUSTED_ORIGINS=https://8ed434c2a4a1.ngrok-free.app label-studio start
 ```
 
+Now open [http://localhost:8080](http://localhost:8080) in your browser to confirm CVAT is working.
 ---
+## Step 5. Stop CVAT
 
-CVAT now runs locally with Docker, and ngrok makes it accessible worldwide over HTTPS without any router configuration.
-
+To stop ngrok and label studio, press **Ctrl + C** in the terminal where it’s running.
