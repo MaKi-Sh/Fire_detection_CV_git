@@ -5,17 +5,9 @@
    * Email: **[Lawri.shinohara@icloud.com](mailto:Lawri.shinohara@icloud.com)**
    * ⚠️ *You must send me your email first, otherwise your account will not be activated.*
 
-2. **Access the CVAT portal**
+2. **Invite link**
+   * [https://8ed434c2a4a1.ngrok-free.app/user/signup/?token=hQGTf20tl4y54jU3ZIg7D5lhu8K8T3z94wGZqUHt](https://8ed434c2a4a1.ngrok-free.app/user/signup/?token=hQGTf20tl4y54jU3ZIg7D5lhu8K8T3z94wGZqUHt)
+   * Use this link to sign up
 
-   * Link: [https://274bf112a9ab.ngrok-free.app](https://274bf112a9ab.ngrok-free.app)
-   * Note: It may take a while to load, and please make sure no firewall is blocking the site.
-   * *(This link is temporary until I migrate to a more stable setup.)*
-
-3. **Log in with your account**
-
-   * **Username**: the first part of your email (before the `@`)
-   * **Password**: `(Firstname)12345!`
-
-     * Example: If your name is *Alice*, your password is `Alice12345!`
-
-4. **Start annotating!**
+3. **Email verification**
+   * After initializing your sign up, go to your email to follow instructions in the page
