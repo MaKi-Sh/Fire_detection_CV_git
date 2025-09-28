@@ -6,7 +6,7 @@
    * ⚠️ *You must send me your email first, otherwise your account will not be activated.*
 
 2. **Invite link**
-   * [https://8ed434c2a4a1.ngrok-free.app/user/signup/?token=hQGTf20tl4y54jU3ZIg7D5lhu8K8T3z94wGZqUHt](https://8ed434c2a4a1.ngrok-free.app/user/signup/?token=hQGTf20tl4y54jU3ZIg7D5lhu8K8T3z94wGZqUHt)
+   * [https://941ce6289028.ngrok-free.app/user/signup/?token=hhyJPWW1iSQq9V3UuoCXLP9YXscuk4B2UINCs4ij](https://941ce6289028.ngrok-free.app/user/signup/?token=hhyJPWW1iSQq9V3UuoCXLP9YXscuk4B2UINCs4ij)
    * Use this link to sign up
 
 3. **Email verification**
