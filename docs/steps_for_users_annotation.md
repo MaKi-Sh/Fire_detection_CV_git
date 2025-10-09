@@ -1,4 +1,4 @@
-# Steps to Start Annotating in CVAT
+# Steps to Start Annotating in Label Studio
 
 1. **Send me your email**
 
@@ -6,7 +6,7 @@
    * ⚠️ *You must send me your email first, otherwise your account will not be activated.*
 
 2. **Invite link**
-   * [https://941ce6289028.ngrok-free.app/user/signup/?token=hhyJPWW1iSQq9V3UuoCXLP9YXscuk4B2UINCs4ij](https://941ce6289028.ngrok-free.app/user/signup/?token=hhyJPWW1iSQq9V3UuoCXLP9YXscuk4B2UINCs4ij)
+   * [https://c5c246d015e8.ngrok-free.app/user/signup/?token=y23el9VLGR5UZTIpCPiCrymzjIgMij4p3Qt5ucSc](https://c5c246d015e8.ngrok-free.app/user/signup/?token=y23el9VLGR5UZTIpCPiCrymzjIgMij4p3Qt5ucSc)
    * Use this link to sign up
 
 3. **Email verification**
