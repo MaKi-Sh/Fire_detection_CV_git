@@ -1,192 +1,212 @@
-# 🔥 Fire Detection Dataset Annotation Guide
+# Label Studio Annotation Setup — macOS & Windows (Step‑by‑Step)
 
-**Thermo Fisher Junior Innovators Challenge – Fire Detection Science Fair Project**
-*by Maki Shinohara (2025)*
+This guide standardizes how to set up Label Studio, connect local USB folders as data sources/targets, use a consistent labeling interface, and export annotations.
 
 ---
 
-## 🧮 1. Setup — Installing Python and Label Studio
+## 0) What you need
 
-### 🖡️ Windows / 💻 macOS / 🐧 Linux
+* **Python 3.9+** installed
+* **Label Studio** (`pip install label-studio`)
+* A USB with:
 
-#### Step 1. Install Python 3
+  * `Raw_files/` (images to annotate)
+  * `Annotated_files/` (empty; where JSON exports will go)
 
-* Go to [https://www.python.org/downloads/](https://www.python.org/downloads/)
-* Download and install the latest version (Python ≥ 3.9)
-* During installation, check **"Add Python to PATH"**
+---
 
-#### Step 2. Verify installation
+## 1) Install & launch Label Studio
 
-```bash
-python --version
-```
-
-You should see something like `Python 3.10.12`
-
-#### Step 3. Verify or install pip
+### macOS
 
 ```bash
-python -m pip --version
-```
-
-If pip is missing:
-
-```bash
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-python get-pip.py
-```
-
-#### Step 4. Install Label Studio
-
-```bash
+# install once
 pip install label-studio
+
+# start LS in the same terminal where you set env vars (see §2)
+label-studio start
 ```
+
+### Windows (PowerShell)
+
+```powershell
+# install once
+python -m pip install label-studio
+
+# start LS in the same PowerShell where you set env vars (see §2)
+label-studio start
+```
+
+Open the URL shown in the terminal (usually `http://localhost:8080`). Create a local account if prompted.
 
 ---
 
-## 🤓 2. Launching Label Studio
+## 2) Enable Local File Storage (so we can use USB folders directly)
 
-After installation:
+> You must set these environment variables **before** starting Label Studio, and start LS from the **same shell**.
+
+### macOS (Terminal / zsh)
 
 ```bash
-label-studio
+export LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED=true
+export LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT="/Volumes"
+label-studio start
 ```
 
-Then open the URL printed in the terminal (usually `http://localhost:8080`).
-If prompted, create an account (email + password). It only stores data locally.
+* `LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT` must be a parent folder of your data. For USBs on macOS, `/Volumes` is correct (ex: `/Volumes/USB_1/Raw_files`).
+
+### Windows (PowerShell)
+
+```powershell
+$env:LABEL_STUDIO_LOCAL_FILES_SERVING_ENABLED = "true"
+$env:LABEL_STUDIO_LOCAL_FILES_DOCUMENT_ROOT = "C:\\"
+label-studio start
+```
+
+* Set the root to a safe parent folder that contains your data (e.g., `D:\` if your USB is `D:`). You can also scope it narrowly, e.g., `C:\Users\YourName\FireData`.
+
+> **Tip:** To make these permanent, add them to your shell profile (`~/.zshrc` on macOS, or your PowerShell profile) and always launch LS from that shell.
 
 ---
 
-## 📂 3. Creating a Labeling Project
+## 3) Create Project & Add Source/Target Storage
 
-1. Click **Create Project**
-2. Name it: `Fire Detection Annotation - YourName`
-3. Click **Create**
+### 3.1 Create a project
 
-### Add the Labeling Interface
+1. Open LS → **Create Project** → Name it: `Fire Detection Annotation - <YourName>`
+2. Click **Create**
 
-Paste this XML in the **Labeling Setup** section:
+### 3.2 Add **Source Storage** (Local Files)
+
+* Go to **Project → Settings → Cloud Storage → Add Source Storage**
+* **Storage type:** Local Files
+* **Name:** `USB_1_Raw`
+* **Absolute local path (macOS):** `/Volumes/USB_1/Raw_files`
+* **Absolute local path (Windows):** `D:\Raw_files` (replace `D:` with your USB letter)
+* **File Filter Regex:** `.*`
+* **Import method:** **Files** 
+* **Recursive:** (recommended)
+* Click **Save and Sync** → tasks appear in Data Manager
+
+### 3.3 Add **Target Storage** (for exports)
+
+* **Add Target Storage** → **Local Files**
+* **Name:** `USB_1_Annotations`
+* **Absolute local path (macOS):** `/Volumes/USB_1/Annotated_files`
+* **Absolute local path (Windows):** `D:\Annotated_files`
+* **Format:** JSON
+* Click **Add Storage** (you'll use **Export → Sync to Target Storage** later)
+
+> You can repeat 3.2–3.3 for multiple USBs: `USB_2_Raw` → `/Volumes/USB_2/Raw_files`, etc.
+
+---
+
+## 4) Standard Labeling Interface (paste this XML)
+
+Go to **Project → Settings → Labeling Interface → Code View** and paste:
 
 ```xml
 <View>
-  <Image name="image" value="$image"/>
-  <RectangleLabels name="label" toName="image">
-    <Label value="Fire" background="red"/>
-    <Label value="Smoke" background="gray"/>
-    <Label value="Nonfire" background="green"/>
+  <Image name="image" value="$image" zoom="true" zoomControl="true" rotateControl="false"/>
+  <RectangleLabels name="label" toName="image" showInline="true">
+    <Label value="Fire" background="red" hotkey="1"/>
+    <Label value="Smoke" background="gray" hotkey="2"/>
+    <Label value="Nonfire" background="green" hotkey="3"/>
   </RectangleLabels>
-  <Header value="If there is no fire or smoke, click 'Nonfire' and submit."/>
+  <Choices name="scene_choice" toName="image" choice="single" showInline="true">
+    <Choice value="Entire Image Nonfire" hotkey="n"/>
+  </Choices>
 </View>
 ```
 
 Click **Save**.
 
+**Policy:**
+
+* **Fire** → box around visible flames
+* **Smoke** → box around visible smoke/haze
+* **Nonfire** → box around *false positives* (glare, sun, red lights, reflections, fog)
+* **Entire Image Nonfire** → choose when *no fire/smoke anywhere* (no boxes required)
+
+Hotkeys: `1` Fire, `2` Smoke, `3` Nonfire, `N` Entire Image Nonfire, **Ctrl/Cmd + Enter** Submit
+
 ---
 
-## 📁 4. Importing Images
+## 5) Labeling Workflow
 
-### Step 1. Plug in your USB
+1. Open **Labeling** tab → annotate each task per the policy
+2. Don’t skip tasks; either draw boxes or check **Entire Image Nonfire**
+3. Submit with **Ctrl/Cmd + Enter**
 
-Each USB should contain:
+> You can pause anytime. If using USB Source Storage, re‑mounting the USB at the **same path** (macOS: `/Volumes/USB_1`, Windows: same drive letter) will restore previews. Annotations are saved in LS’s local database.
 
+---
+
+## 6) Exporting Annotations
+
+### Option A — Sync to Target Storage (recommended)
+
+* Go to **Export** → **Sync to Target Storage** → choose `USB_1_Annotations`
+* A JSON file like `project-<id>-annotations.json` is written to the USB `Annotated_files/`
+
+### Option B — Manual download
+
+* **Export** → choose **JSON** → download
+* Copy the JSON into `Annotated_files/` on the USB
+
+---
+
+## 7) Optional: CLI import (organizer fast path)
+
+Avoids browser upload limits; registers files directly.
+
+Find your project ID from URL (e.g., `/projects/2/` → ID `2`). Then:
+
+### macOS
+
+```bash
+label-studio import \
+  "/Users/<you>/Library/Application Support/label-studio/projects/2" \
+  "/Volumes/USB_1/Raw_files"
 ```
-images/
-annotations/
-README.txt
+
+### Windows (PowerShell)
+
+```powershell
+label-studio import \
+  "C:\\Users\\<you>\\AppData\\Local\\label-studio\\projects\\2" \
+  "D:\\Raw_files"
 ```
 
-### Step 2. Import images
-
-In Label Studio:
-
-1. Go to your project → **Import**
-2. Click **Upload Files**
-3. Select all files inside the `images/` folder on your USB
+> Replace `<you>`, `2`, and drive letters accordingly.
 
 ---
 
-## 🏷️ 5. Annotating Images
+## 8) Troubleshooting
 
-Open the **Labeling** tab.
-
-### Labeling Rules
-
-| Label          | When to use              | How                                  |
-| -------------- | ------------------------ | ------------------------------------ |
-| 🔥 **Fire**    | Flames visible           | Draw a bounding box around the fire  |
-| ☁️ **Smoke**   | Visible smoke (no flame) | Draw a bounding box around the smoke |
-| 🏠 **Nonfire** | No fire/smoke            | Select "Nonfire" (no box needed)     |
-
-### Keyboard Shortcuts
-
-| Action  | Shortcut                                      |
-| ------- | --------------------------------------------- |
-| Fire    | `1`                                           |
-| Smoke   | `2`                                           |
-| Nonfire | `3`                                           |
-| Submit  | `Ctrl+Enter` (Win/Linux) or `Cmd+Enter` (Mac) |
+* **Validation error: 'name' is a required property** → Ensure interface XML uses `name` on controls and correct `toName` links (use the XML in §4).
+* **UI upload error: “You cannot access body after reading from request's data stream”** → Use **Source Storage** (this guide) or import in smaller batches, or use CLI import in §7.
+* **Images not showing after re‑plugging USB** → Confirm the mount path is identical (macOS `/Volumes/USB_1` must not become `/Volumes/USB_1 1`; on Windows, the drive letter must match).
+* **Permissions** → If LS can’t read/write to the USB path, check OS permissions and that your **Document Root** (env var) is a parent of the specified absolute paths.
 
 ---
 
-## 🚀 6. Exporting Work
+## 9) Quality Checklist for Annotators
 
-After labeling:
-
-1. Go to **Project Dashboard**
-2. Click **Export**
-3. Choose **JSON**
-4. Save as:
-
-   ```
-   annotations_<yourname>.json
-   ```
-5. Move it to your USB `annotations/` folder.
+* 🔲 Label **all** flames and smoke
+* 🔲 Mark **false positives** (glare/lights/fog) with **Nonfire** boxes
+* 🔲 Use **Entire Image Nonfire** when applicable
+* 🔲 Keep boxes tight; avoid huge sloppy boxes
+* 🔲 Submit each task (Ctrl/Cmd + Enter)
+* 🔲 Export/Sync JSON into `Annotated_files/` before returning USB
 
 ---
 
-## 📤 7. Returning Your USB
+## 10) Quick Reference (mount paths)
 
-1. Ensure your `annotations/` folder contains your JSON file.
-2. Safely eject your USB.
-3. Return it to Maki.
-
----
-
-## 🔍 8. Troubleshooting
-
-| Problem                 | Solution                                     |
-| ----------------------- | -------------------------------------------- |
-| Label Studio won’t open | Try `label-studio start` or restart terminal |
-| Port in use             | Run `label-studio --port 8090`               |
-| Upload errors           | Upload smaller batches (50–100 images)       |
-| Project disappeared     | Restart Label Studio; it auto-saves locally  |
+* **macOS USB:** `/Volumes/USB_#/Raw_files` and `/Volumes/USB_#/Annotated_files`
+* **Windows USB:** `D:\Raw_files` and `D:\Annotated_files` (replace `D:` with actual drive letter)
 
 ---
 
-## 💡 Tips for High-Quality Labeling
-
-* Double-check before submitting.
-* If unsure whether it’s smoke or fog, label **Nonfire**.
-* Focus on **accuracy > speed**.
-* Zoom/pan for small fires.
-
----
-
-## ✅ Summary
-
-| Step | Action                                            |
-| ---- | ------------------------------------------------- |
-| 1    | Install Python + pip                              |
-| 2    | Install Label Studio (`pip install label-studio`) |
-| 3    | Start Label Studio (`label-studio`)               |
-| 4    | Create project & paste labeling XML               |
-| 5    | Import images from USB `/images/`                 |
-| 6    | Annotate (Fire / Smoke / Nonfire)                 |
-| 7    | Export JSON to `/annotations/`                    |
-| 8    | Return USB to Maki                                |
-
----
-
-### 🎉 Thank You!
-
-Each labeled image helps train the fire detection AI system for safer homes and communities.
+**You’re ready to annotate. Thank you!** Each labeled image directly improves our fire detection model’s reliability and lowers false positives.
