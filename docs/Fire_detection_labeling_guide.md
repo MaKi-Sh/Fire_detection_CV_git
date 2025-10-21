@@ -210,3 +210,22 @@ label-studio import \
 ---
 
 **You’re ready to annotate. Thank you!** Each labeled image directly improves our fire detection model’s reliability and lowers false positives.
+---
+
+## 💾 USB Safety — How to Stop Label Studio Properly
+
+Always **shut down Label Studio before unplugging the USB**  
+to avoid data loss or broken file paths.
+
+### 🧱 Why
+Label Studio keeps image files open from the USB (e.g., `/Volumes/USB_1/Raw_files`).  
+If you remove it while LS is running, annotations might not save correctly or  
+the project could lose links to your data.
+
+---
+
+### 🧩 macOS / Linux
+1. In the Terminal where Label Studio is running, press:
+   ```bash
+   Ctrl + C
+
