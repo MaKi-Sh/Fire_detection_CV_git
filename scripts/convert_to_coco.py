@@ -1,1 +1,0 @@
-# Placeholder for convert_to_coco.py

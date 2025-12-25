@@ -1,0 +1,5 @@
+path: ../datasets  # Path to dataset root directory
+train: images/train  # Path to training images
+val: images/val  # Path to validation images
+nc: 3  # Number of classes
+names: ['class1', 'class2', 'class3']  # Class names
