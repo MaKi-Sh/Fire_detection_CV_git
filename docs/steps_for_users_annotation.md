@@ -1,5 +1,13 @@
-#Here are the steps for the annotators to start annotating in CVAT
--First, send your email to Lawri.shinohara@icloud.com (ALERT: You will not be accepted unless you write your email to me) 
--Second, go to https://41aad584bed5.ngrok-free.app and be sure to not have any firewalls (Changes until I can start running it on a more stable computer, may take a while to load) 
--Third, log in, Username:(firstname)_(lastname) Password: 12345!!!
--Fourth, Happy annotating!
+# Steps to Start Annotating in Label Studio
+
+1. **Send me your email**
+
+   * Email: **[Lawri.shinohara@icloud.com](mailto:Lawri.shinohara@icloud.com)**
+   * ⚠️ *You must send me your email first, otherwise your account will not be activated.*
+
+2. **Invite link**
+   * [https://39a3c72742c6.ngrok-free.app/user/signup/?token=fAKrJ3DokUoDwanlvo1i86uFMPAsfiVdCa7dKbqt](https://39a3c72742c6.ngrok-free.app/user/signup/?token=fAKrJ3DokUoDwanlvo1i86uFMPAsfiVdCa7dKbqt)
+   * Use this link to sign up
+
+3. **Email verification**
+   * After initializing your sign up, go to your email to follow instructions in the page
