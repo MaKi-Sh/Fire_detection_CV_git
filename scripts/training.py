@@ -1,30 +1,41 @@
-#load dataset 
-dataset = dataset()
-#Splitting dataset
-from sklearn.model_selection import train_test_split
+from ultralytics import YOLO, settings
 import os
-import shutil
-from ultralytics import YOLO
+import wandb
 
-def split_dataset(images_dir, labels_dir, output_dir, test_size=0.2, val_size=0.2):
-    images = [f for f in os.listdir(images_dir) if f.endswith('.jpg')]
-    train_images, test_images = train_test_split(images, test_size=test_size, random_state=42)
-    train_images, val_images = train_test_split(train_images, test_size=val_size, random_state=42)
+os.environ["WANDB_PROJECT"] = "Fire-detect_absparamwinner_1"
+settings.update(wandb=True)
 
-    for subset, subset_images in [('train', train_images), ('val', val_images), ('test', test_images)]:
-        os.makedirs(f"{output_dir}/images/{subset}", exist_ok=True)
-        os.makedirs(f"{output_dir}/labels/{subset}", exist_ok=True)
-        for image in subset_images:
-            shutil.copy(f"{images_dir}/{image}", f"{output_dir}/images/{subset}/{image}")
-            label_file = image.replace('.jpg', '.txt')
-            shutil.copy(f"{labels_dir}/{label_file}", f"{output_dir}/labels/{subset}/{label_file}")
+wandb.init(project="Fire-detect_absparamwinner_1")
+wandb.define_metric("metrics/precision(B)", summary="max")
+wandb.define_metric("metrics/recall(B)", summary="max")
+wandb.define_metric("metrics/mAP50(B)", summary="max")
 
+model = YOLO('yolo11n.pt')  # load model
 
-model = YOLO(yolo11n.pt) #load model
-
-model.train(data='config.yaml',  # Path to YAML config
-            epochs=50,                  # Number of epochs
-            imgsz=640,                  # Image size
-            batch=16,                   # Batch size
-            device=0)                   # GPU device index
-#maybe configure weights and biases later 
+model.train(data='/home/makish/Desktop/Science_fair_2025/Fire_detection_CV_git/scripts/config.yaml',
+            epochs=100,
+	    patience=20,
+            imgsz=640,
+            batch=16,
+            device=0,
+            project='/home/makish/Desktop/Science_fair_2025/Fire_detection_CV_git/runs', 
+	    #data augmentation
+	    hsv_h=0.0,
+	    hsv_s=0.0,
+	    hsv_v=0.0,
+	    degrees=0.0,
+	    translate=0.0,
+	    scale=0.3,
+	    shear=0.0,
+	    perspective=0.0,
+	    flipud=0.2,
+	    fliplr=0.1,
+	    bgr=0.0,
+	    mosaic=1.0,
+	    mixup=0.7,
+	    copy_paste=0.0,
+	    copy_paste_mode="flip",
+	    auto_augment=None,
+	    erasing=0.0,
+	    crop_fraction=0.0
+)

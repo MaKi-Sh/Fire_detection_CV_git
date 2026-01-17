@@ -1,0 +1,13 @@
+from ultralytics import YOLO
+
+model = YOLO('yolo11n.pt')  # load model
+
+model.train(data='/home/makish/Desktop/Science_fair_2025/Fire_detection_CV_git/scripts/config.yaml',
+            epochs=100,
+            patience=20,
+            imgsz=640,
+            batch=16,
+            device=0,
+	    #flip  horizontally
+	    fliplr=0.5
+)
