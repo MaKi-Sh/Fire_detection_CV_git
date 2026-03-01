@@ -1,5 +1,6 @@
-path: /home/makish/Desktop/Science_fair_2025/Annotations/More_annotations  # Path to dataset root directory
+path: /home/makish/Desktop/Science_fair_2025/Annotations_backup  # Path to dataset root directory
 train: images/train  # Path to training images
 val: images/val  # Path to validation images
+test: images/test  # Path to test images
 nc: 5  # Number of classes
 names: ['ControlledFire', 'Entire Image Nonfire', 'Fire', 'Nonfire', 'Smoke']  # Class names

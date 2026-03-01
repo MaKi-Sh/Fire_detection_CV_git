@@ -1,0 +1,11 @@
+names:
+- ControlledFire
+- Entire Image Nonfire
+- Fire
+- Nonfire
+- Smoke
+nc: 5
+path: /home/makish/Desktop/Science_fair_2025/Annotations_backup
+test: images/test
+train: images/train
+val: images/test

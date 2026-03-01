@@ -1,0 +1,8 @@
+names:
+- ControlledFire
+- Fire
+nc: 2
+path: /home/makish/Desktop/Science_fair_2025/Annotations_fire_only
+test: images/test
+train: images/train
+val: images/test

@@ -7,9 +7,10 @@ import yaml
 import cv2
 from pathlib import Path
 
-# Fire class index (from config.yaml: ['ControlledFire', 'Entire Image Nonfire', 'Fire', 'Nonfire', 'Smoke'])
-FIRE_CLASS_INDEX = 2
-CONFIG_PATH = '/home/makish/Desktop/Science_fair_2025/Fire_detection_CV_git/scripts/config.yaml'
+# Fire class index for 2-class dataset: ['ControlledFire', 'Fire']
+# ControlledFire = 0, Fire = 1
+FIRE_CLASS_INDEX = 1
+CONFIG_PATH = '/home/makish/Desktop/Science_fair_2025/Fire_detection_CV_git/scripts/config_fire_only.yaml'
 
 
 def visualize_validation_predictions(model, save_dir, num_images=5):
@@ -78,9 +79,9 @@ def visualize_validation_predictions(model, save_dir, num_images=5):
     print(f"Validation predictions saved to: {output_dir}")
 
 sweep_config = {
-    "name": "yolo11x fire-class recall optimization",
+    "name": "yolo11n recall optimization",
     "method": "bayes",
-    "metric": {"name": "fire_recall", "goal": "maximize"},
+    "metric": {"name": "metrics/recall(B)", "goal": "maximize"},
     "parameters": {
         # Core training - HIGH IMPACT
         "optimizer": {"values": ["SGD", "AdamW"]},  # These two are the main ones
@@ -101,9 +102,9 @@ sweep_config = {
 }
 
 # Config for training (uses test set for validation during sweep)
-TRAIN_CONFIG_PATH = '/home/makish/Desktop/Science_fair_2025/Fire_detection_CV_git/scripts/config_train.yaml'
+TRAIN_CONFIG_PATH = '/home/makish/Desktop/Science_fair_2025/Fire_detection_CV_git/scripts/config_fire_only_train.yaml'
 # Config for final validation (uses val set)
-VAL_CONFIG_PATH = '/home/makish/Desktop/Science_fair_2025/Fire_detection_CV_git/scripts/config.yaml'
+VAL_CONFIG_PATH = '/home/makish/Desktop/Science_fair_2025/Fire_detection_CV_git/scripts/config_fire_only.yaml'
 
 
 def create_train_config():
@@ -120,15 +121,6 @@ def create_train_config():
     print(f"Created training config with val=images/test at {TRAIN_CONFIG_PATH}")
 
 
-
-
-
-
-
-
-
-
-
 def train():
     """Training function called by wandb agent for each sweep run."""
     wandb.init()
@@ -140,7 +132,7 @@ def train():
     wandb.define_metric("metrics/recall(B)", summary="max")
     wandb.define_metric("metrics/mAP50(B)", summary="max")
 
-    model = YOLO('yolo11x.pt')
+    model = YOLO('yolo11n.pt')
 
     # Custom callback to log fire-class-specific metrics after each validation
     def log_fire_metrics(validator):
@@ -151,7 +143,7 @@ def train():
             # Get per-class metrics from validator results
             # validator.metrics contains per-class recall/precision
             if hasattr(validator, 'metrics') and validator.metrics is not None:
-                # Get recall for fire class (index 2)
+                # Get recall for fire class (index 1 in 2-class dataset)
                 if hasattr(validator.metrics, 'class_result'):
                     # class_result returns (p, r, ap50, ap) for the specified class
                     fire_p, fire_r, fire_ap50, fire_ap = validator.metrics.class_result(FIRE_CLASS_INDEX)
@@ -160,7 +152,7 @@ def train():
                         "fire_precision": fire_p,
                         "fire_ap50": fire_ap50,
                         "fire_ap": fire_ap,
-                    })
+                    }, commit=False)  # Don't advance step - let Ultralytics control it
         except Exception as e:
             print(f"Warning: Could not log fire metrics: {e}")
 
@@ -170,7 +162,7 @@ def train():
     # Train using config that validates against test set
     results = model.train(
         data=TRAIN_CONFIG_PATH,  # Uses test set for validation
-        name=f'sweep_{wandb.run.id}',
+        name=f'sweep_fire_only_{wandb.run.id}',
         epochs=100,
         patience=20,
         device=0,
@@ -217,7 +209,7 @@ def train():
             print(f"Warning: Could not log final fire metrics: {e}")
 
         if final_metrics:
-            wandb.log(final_metrics)
+            wandb.log(final_metrics, commit=False)  # Don't advance step
 
     # Visualize predictions on 5 random validation images
     try:
@@ -225,7 +217,7 @@ def train():
         if hasattr(results, 'save_dir'):
             save_dir = results.save_dir
         else:
-            save_dir = f'/home/makish/Desktop/Science_fair_2025/Fire_detection_CV_git/runs/sweep_{wandb.run.id if wandb.run else "unknown"}'
+            save_dir = f'/home/makish/Desktop/Science_fair_2025/Fire_detection_CV_git/runs/sweep_fire_only_{wandb.run.id if wandb.run else "unknown"}'
 
         # Load the best model weights for inference
         best_weights = Path(save_dir) / 'weights' / 'best.pt'
@@ -286,12 +278,7 @@ if __name__ == "__main__":
     create_train_config()
 
     # Create the sweep
-    sweep_id = wandb.sweep(sweep_config, project="Fire-detect_yolo11x_fire-recall")
+    sweep_id = wandb.sweep(sweep_config, project="Fire-detect_yolo11n_recall_opt")
 
     # Run the sweep agent (change count to set number of runs)
     wandb.agent(sweep_id, function=train, count=120)
-
-
-
-
-
